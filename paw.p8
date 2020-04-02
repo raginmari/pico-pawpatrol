@@ -8,11 +8,15 @@ end
 
 function restart()
 	p={}
-	p.anim=set_anim(p,"idle")
 	p.x=59
 	p.y=59
 	p.dx=0
+	p.dy=0
+	p.max_dx=1
+	p.max_dy=1
+	p.acc=0
 	p.flipx=false
+	p.anim=set_anim(p,"idle")
 end
 
 function set_anim(p,name)
