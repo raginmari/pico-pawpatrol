@@ -12,28 +12,22 @@ function restart()
 	p.y=59
 	p.dx=0
 	p.dy=0
-	p.max_dx=1
-	p.max_dy=1
-	p.acc=0
+	p.max_dx=3
+	p.max_dy=4
+	p.acc_x=p.max_dx
+	p.acc_y=4
 	p.flipx=false
 	p.anim=set_anim(p,"idle")
 end
 
 function set_anim(p,name)
 	local a={ n=name, t=time() }
-	
 	if name=="idle" then
-		a.f0=0	
-		a.f1=1 
-		a.dt=0.5
+		a.f0=0 a.f1=1 a.dt=0.5
 	elseif name=="run" then
-		a.f0=3 
-		a.f1=6 
-		a.dt=0.125
+		a.f0=3 a.f1=6 a.dt=0.125
 	end
-	
 	p.spr=a.f0
-	
 	return a
 end
 
@@ -49,20 +43,22 @@ end
 function update_input(p)
 	local name=p.anim.n
 	
-	if (btn(⬅️) or btn(➡️)) and name!="run" then
-		p.anim=set_anim(p,"run")
-	elseif btn()==0 and name!="idle" then
+	if btn()==0 and name!="idle" then
 		p.anim=set_anim(p,"idle")
+	elseif btn(⬅️) and name!="run" then
+		p.anim=set_anim(p,"run")
+	elseif btn(➡️) and name!="run" then
+		p.anim=set_anim(p,"run")
 	end
-	
-	if btn(⬅️) then 
+
+	if btn()==0 then
+		p.dx=0	
+	elseif btn(⬅️) then 
 		p.flipx=true
 		p.dx=-1
 	elseif btn(➡️) then
 		p.flipx=false
 		p.dx=1
-	elseif btn()==0 then
-		p.dx=0
 	end
 end
 
@@ -72,7 +68,7 @@ function update_anim(p)
 		a.t=time()
 		p.spr+=1
 		if p.spr>a.f1 then
-			p.spr=a.f0
+			p.spr=a.f0 --wrap around
 		end
 	end
 end
