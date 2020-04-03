@@ -3,7 +3,7 @@ version 18
 __lua__
 --setup
 gravity=0.3
-friction=0.66
+friction=0.65
 	
 function _init()
 	restart()
@@ -17,9 +17,9 @@ function restart()
 	p.h=8
 	p.dx=0
 	p.dy=0
-	p.max_dx=3
+	p.max_dx=2
 	p.max_dy=4
-	p.acc_x=p.max_dx
+	p.acc_x=0.85
 	p.acc_y=4
 	p.flipx=false
 	p.anim=set_anim(p,"idle")
@@ -62,9 +62,10 @@ function _update()
 	p.y+=p.dy
 	
 	--bounds collision
-	p.x=mid(0,p.x,127-7)
-	p.y=mid(0,p.y,127-15)
+	p.x=mid(0,p.x,120)
+	p.y=mid(0,p.y,128-8-p.h)
 	
+	--zero low dx
 	if abs(p.dx)<0.1 then p.dx=0 end
 end
 
@@ -112,6 +113,8 @@ function _draw()
  map(0,0)
  spr(p.spr,p.x,p.y,1,1,p.flipx)
 	rect(p.x,p.y,p.x+p.w-1,p.y+p.h-1,7)
+	print("dx "..p.dx)
+	print("dy "..p.dy,0,8)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
