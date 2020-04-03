@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
 --setup
-gravity=0.3
+gravity=0.4
 friction=0.65
 	
 function _init()
@@ -20,9 +20,10 @@ function restart()
 	p.max_dx=2
 	p.max_dy=4
 	p.acc_x=0.85
-	p.acc_y=4
+	p.acc_y=3
 	p.flipx=false
 	p.anim=set_anim(p,"idle")
+	p.on_floor=false
 end
 
 function set_anim(p,name)
@@ -51,7 +52,10 @@ function _update()
 	p.dx*=friction
 	
 	--controls
-	if btn(⬅️) then
+	if p.on_floor and btnp(❎) then
+		p.on_floor=false
+		p.dy=-p.acc_y
+	elseif btn(⬅️) then
 		p.dx-=p.acc_x
 	elseif btn(➡️) then
 		p.dx+=p.acc_x
@@ -67,7 +71,10 @@ function _update()
 	
 	--bounds collision
 	p.x=mid(0,p.x,120)
-	p.y=mid(0,p.y,128-8-p.h)
+	if p.y>120-p.h then
+		p.on_floor=true
+		p.y=120-p.h
+	end
 	
 	--zero low dx
 	if abs(p.dx)<0.1 then p.dx=0 end
