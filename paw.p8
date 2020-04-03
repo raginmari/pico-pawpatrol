@@ -80,28 +80,6 @@ function _update()
 	if abs(p.dx)<0.1 then p.dx=0 end
 end
 
-function update_input(p)
-	local name=p.anim.n
-	
-	if btn()==0 and name!="idle" then
-		p.anim=set_anim(p,"idle")
-	elseif btn(⬅️) and name!="run" then
-		p.anim=set_anim(p,"run")
-	elseif btn(➡️) and name!="run" then
-		p.anim=set_anim(p,"run")
-	end
-
-	if btn()==0 then
-		p.dx=0	
-	elseif btn(⬅️) then 
-		p.flipx=true
-		p.dx=-1
-	elseif btn(➡️) then
-		p.flipx=false
-		p.dx=1
-	end
-end
-
 function update_anim(p)
 	local a=p.anim
 	if time()-a.t>a.dt then
@@ -111,11 +89,6 @@ function update_anim(p)
 			p.spr=a.f0 --wrap around
 		end
 	end
-end
-
-function update_move(p)
-	if p.dx==0 then return end
-	p.x+=p.dx*0.032*32
 end
 -->8
 --draw
