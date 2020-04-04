@@ -22,23 +22,23 @@ function restart()
 	p.acc_x=0.85
 	p.acc_y=3
 	p.flipx=false
-	p.anim=set_anim(p,"idle")
 	p.on_floor=false
+	set_anim(p,"idle")
 end
 
 function set_anim(p,name)
-	local a={ n=name, t=time() }
-	
+	local a={ name=name, t=time() }
 	if name=="idle" then
-		a.f0=0  a.f1=1  a.dt=0.5
+		a.f0=0
+		a.f1=1
+		a.dt=0.5
 	elseif name=="run" then
-		a.f0=3  a.f1=6  a.dt=0.125
+		a.f0=3
+		a.f1=6
+		a.dt=0.125
 	end
-	
-	--set first frame
+	p.anim=a
 	p.spr=a.f0
-	
-	return a
 end
 
 
@@ -78,10 +78,36 @@ function _update()
 	
 	--zero low dx
 	if abs(p.dx)<0.1 then p.dx=0 end
+	
+	--animation
+	local anim=p.anim.name
+	if p.on_floor then
+		if p.dx!=0 and anim!="run" then
+			set_anim(p, "run")
+		elseif p.dx==0 and anim!="idle" then
+			set_anim(p, "idle")
+		end
+	else
+		p.anim={ name="none" }
+		if p.dy>0 then
+			p.spr=10	
+		else
+			p.spr=8
+		end
+	end
+	update_anim(p)
+	
+	--direction
+	if p.dx<0 then
+		p.flipx=true
+	elseif p.dx>0 then
+		p.flipx=false
+	end
 end
 
 function update_anim(p)
 	local a=p.anim
+	if a.name=="none" then return end
 	if time()-a.t>a.dt then
 		a.t=time()
 		p.spr+=1
@@ -96,7 +122,7 @@ function _draw()
  cls()
  map(0,0)
  spr(p.spr,p.x,p.y,1,1,p.flipx)
-	rect(p.x,p.y,p.x+p.w-1,p.y+p.h-1,7)
+	--rect(p.x,p.y,p.x+p.w-1,p.y+p.h-1,7)
 	print("dx "..p.dx)
 	print("dy "..p.dy,0,8)
 end
