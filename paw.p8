@@ -17,9 +17,9 @@ function restart()
 	p.h=8
 	p.dx=0
 	p.dy=0
-	p.max_dx=2
+	p.max_dx=1.5
 	p.max_dy=4
-	p.acc_x=0.85
+	p.acc_x=0.65
 	p.acc_y=3
 	p.flipx=false
 	p.on_floor=false
