@@ -69,12 +69,8 @@ function _update()
 	p.x+=p.dx
 	p.y+=p.dy
 	
-	--bounds collision
-	p.x=mid(0,p.x,120)
-	if p.y>120-p.h then
-		p.on_floor=true
-		p.y=120-p.h
-	end
+	--collision
+	collide_player(p)
 	
 	--zero low dx
 	if abs(p.dx)<0.1 then p.dx=0 end
@@ -157,6 +153,15 @@ function draw_gradient(y,colors)
   y+=4
   p=min(p+1,17)
  end
+end
+-->8
+--collision
+function collide_player(p)
+	p.x=mid(0,p.x,120)
+	if p.y>120-p.h then
+		p.on_floor=true
+		p.y=120-p.h
+	end
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
