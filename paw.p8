@@ -121,8 +121,7 @@ function _draw()
 	--rect(p.x,p.y,p.x+p.w-1,p.y+p.h-1,7)
 	print("dx "..p.dx,1,1,7)
 	print("dy "..p.dy,1,9,7)
-	local of=p.on_floor and "yes" or "no"
-	print("on floor? "..of,1,17,7)
+	print("#hit x "..coll_x,1,17,7)
 end
 
 -->8
@@ -158,6 +157,7 @@ function draw_gradient(y,colors)
 end
 -->8
 --collision
+coll_x=0
 function collide_player(p)
 	if p.dx!=0 then
 		local x=p.dx>0 and p.x+p.w or p.x-1
@@ -167,13 +167,20 @@ function collide_player(p)
 	 or collide_map(x,y1,0) then
 			p.x=8*flr((p.x+0.5*p.w)/8)
 	 	p.dx=0
+	 	coll_x+=1
 	 end
 	end
 	
-	if p.y+p.dy>120-p.h then
-		p.on_floor=true
-		p.y=120-p.h
-		p.dy=0
+	if p.dy>0 then
+		local x0=p.x
+		local x1=x0+p.w-1
+		local y=p.y+p.h
+		if collide_map(x0,y,0)
+	 or collide_map(x1,y,0) then
+			p.on_floor=true
+			p.y-=p.y%8
+	 	p.dy=0
+	 end
 	end
 end
 
