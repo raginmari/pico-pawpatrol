@@ -168,44 +168,7 @@ end
 -->8
 --collision
 function collide_player(p)
-	if p.dx!=0 then
-		local x,xn --x(n)eighbor
-		
-		if p.dx>0 then
-			x=p.x+p.w
-			xn=x-8
-		else
-			x=p.x-1
-			xn=x+8
-		end
-		
-		local y0=p.y
-		local y1=y0+p.h-1
-		
-		if collide_map(x,y0,0)
-		and not collide_map(xn,y0,0)
-		or collide_map(x,y1,0)
-		and not collide_map(xn,y1,0) then
-			p.x=8*flr((p.x+0.5*p.w)/8)
-			p.dx=0
-	 end
-	end
 	
-	if p.dy>0 then
-		local x0=p.x
-		local x1=x0+p.w-1
-		local y=p.y+p.h
-		if collide_map(x0,y,0)
-	 or collide_map(x1,y,0) then
-	 	p.on_floor=true
-	 	p.y-=p.y%8
-	 	p.dy=0
-	 end
-	end
-end
-
-function collide_map(x,y,f)
-	return fget(mget(x/8,y/8),f)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
