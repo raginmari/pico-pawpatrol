@@ -116,8 +116,11 @@ end
 --draw
 function _draw()
 	cls()
+	local cx=max(64,p.x)-64
+	camera(cx,0)
  map(0,0)
  spr(p.spr,p.x,p.y,1,1,p.flipx)
+ camera()
 	--rect(p.x,p.y,p.x+p.w-1,p.y+p.h-1,7)
 	print("dx "..p.dx,1,1,7)
 	print("dy "..p.dy,1,9,7)
