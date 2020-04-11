@@ -61,18 +61,17 @@ function _update()
 	if btn(➡️) then p.dx+=p.acc_x end
 	
 	--limits
+	if abs(p.dx)<0.1 then p.dx=0 end
 	p.dx=mid(-p.max_dx,p.dx,p.max_dx)
 	p.dy=mid(-p.max_dy,p.dy,p.max_dy)
-	
-	--collision
-	collide_player(p)
-		
+
 	--position
+	local old_x,old_y=p.x,p.y
 	p.x+=p.dx
 	p.y+=p.dy
 	
-	--zero low dx
-	if abs(p.dx)<0.1 then p.dx=0 end
+	--collision
+	collide_player(p,old_x,old_y)
 	
 	--animation
 	local anim=p.anim.name
@@ -167,8 +166,8 @@ end
 --math
 -->8
 --collision
-function collide_player(p)
-	
+function collide_player(p,new_x,new_y)
+	 p.y=min(112,p.y)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
