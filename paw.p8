@@ -135,35 +135,6 @@ function draw_ui()
 	print("dy "..p.dy,1,9,7)
 end
 
-dither={
- 0x1000.0000,
-	0x1000.8000,
-	0x1000.8020,
-	0x1000.a020,
-	0x1000.a0a0,
-	0x1000.a4a0,
-	0x1000.a4a1,
-	0x1000.a5a1,
-	0x1000.a5a5,
-	0x1000.e5a5,
-	0x1000.e5b5,
-	0x1000.f5b5,
-	0x1000.f5f5,
-	0x1000.fdf5,
-	0x1000.fdf7,
-	0x1000.fff7,
-	0x1000.ffff
-}
-
-function draw_gradient(y,colors)
-	local d=dither
-	local p=1
- while y<128 do
- 	rectfill(0,y,127,y+3,colors+d[p])
-  y+=4
-  p=min(p+1,17)
- end
-end
 -->8
 --math
 function aabb(obj)
