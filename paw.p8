@@ -125,7 +125,9 @@ end
 
 function draw_world()
 	map(0,0)
+	rectfill(8*tx0,8*ty0,8*tx1+7,8*ty1+7,10)
  spr(p.spr,p.x,p.y,1,1,p.flipx)
+	rect(r.x0,r.y0,r.x1,r.y1,2)
 end
 
 function draw_ui()
@@ -164,10 +166,51 @@ function draw_gradient(y,colors)
 end
 -->8
 --math
+function aabb(obj)
+	local half_w=obj.w/2
+	local half_h=obj.h/2
+	return {
+		x=obj.x+half_w,
+		y=obj.y+half_h,
+		half_w=half_w,
+		half_h=half_h
+	}
+end
 -->8
 --collision
-function collide_player(p,new_x,new_y)
-	 p.y=min(112,p.y)
+r={}
+
+function collide_player(p,old_x,old_y)
+	--aabb of old and new pos
+	local x0=min(p.x,old_x)
+	local x1=max(p.x,old_x)+p.w-1
+	local y0=min(p.y,old_y)
+	local y1=max(p.y,old_y)+p.h-1	 
+	r.x0=x0  r.x1=x1
+	r.y0=y0  r.y1=y1
+	
+	--tiles in aabb
+	tx0=flr(x0/8)
+	tx1=flr(x1/8)
+	ty0=flr(y0/8)
+	ty1=flr(y1/8)
+	
+	for ty=ty0,ty1 do
+		for tx=tx0,tx1 do	
+		 
+		end
+	end
+	
+	--legacy
+	if p.y>112 then
+		p.y=112
+		p.dy=0
+		p.on_floor=true
+	end
+end
+
+function collide(p,tx,ty)
+	
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
