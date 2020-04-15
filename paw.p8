@@ -4,6 +4,7 @@ __lua__
 --setup
 gravity=0.4
 friction=0.65
+fps_dt=0.333
 	
 function _init()
 	restart()
@@ -138,9 +139,28 @@ end
 
 function draw_world()
 	map(0,0)
-	rectfill(8*tx0,8*ty0,8*tx1+7,8*ty1+7,10)
+	rectfill(
+		8*(tx0),
+		8*(ty0),
+		8*(tx1)+7,
+		8*(ty1)+7,
+		10)
+	for e in all(collisions) do
+		rectfill(
+			8*e.x+1,
+			8*e.y+1,
+			8*e.x+6,
+			8*e.y+6,
+			8
+		)
+	end
  spr(p.spr,p.x,p.y,1,1,p.flipx)
-	rect(r.x0,r.y0,r.x1,r.y1,2)
+	rect(
+		aabb.x0,
+		aabb.y0,
+		aabb.x1,
+		aabb.y1,
+		2)
 end
 
 function draw_treat()
@@ -157,28 +177,32 @@ end
 
 -->8
 --math
-function aabb(obj)
-	local half_w=obj.w/2
-	local half_h=obj.h/2
-	return {
-		x=obj.x+half_w,
-		y=obj.y+half_h,
-		half_w=half_w,
-		half_h=half_h
-	}
+function sign(n)
+	return n>0 and 1 or n<0 and -1 or 0
+end
+
+function vec_dot(v1x,v1y,v2x,v2y)
+	return v1x*v2x+v1y*v2y
 end
 -->8
 --collision
-r={}
+aabb={}
+tx0=0
+ty0=0
+tx1=0
+ty1=0
+collisions={}
 
 function collide_player(p,old_x,old_y)
+	collisions={}
+	
 	--aabb of old and new pos
 	local x0=min(p.x,old_x)
 	local x1=max(p.x,old_x)+p.w-1
 	local y0=min(p.y,old_y)
 	local y1=max(p.y,old_y)+p.h-1	 
-	r.x0=x0  r.x1=x1
-	r.y0=y0  r.y1=y1
+	aabb.x0=x0  aabb.x1=x1
+	aabb.y0=y0  aabb.y1=y1
 	
 	--tiles in aabb
 	tx0=flr(x0/8)
@@ -188,7 +212,9 @@ function collide_player(p,old_x,old_y)
 	
 	for ty=ty0,ty1 do
 		for tx=tx0,tx1 do	
-		 
+		 if fget(mget(tx,ty),0) then
+		 	resolve(p,contact(p,tx,ty),tx,ty)
+		 end
 		end
 	end
 	
@@ -200,8 +226,47 @@ function collide_player(p,old_x,old_y)
 	end
 end
 
-function collide(p,tx,ty)
+function contact(p,tx,ty)
+	--player, tile x and y
 	
+	--player center
+	local pcx=p.x+p.w/2-0.5
+	local pcy=p.y+p.h/2-0.5
+	
+	--tile aabb
+	local tcx=8*tx+3.5
+	local tcy=8*ty+3.5
+	local tbb_w=8+p.w --inflate
+	local tbb_h=8+p.h
+	
+	--vec tile -> player
+	local vx=pcx-tcx
+	local vy=pcy-tcy
+	
+	local nx,ny,d
+	if abs(vx)>abs(vy) then
+		nx=sign(vx)
+		ny=0
+		d=vx-nx*tbb_w/2
+	else
+		nx=0
+		ny=sign(vy)
+		d=vy-ny*tbb_h/2
+	end
+	
+	return {nx=nx,ny=ny,dist=d}
+end
+
+function resolve(p,c,tx,ty)
+	--player, contact
+	
+	local vx=p.dx
+	local vy=p.dy
+	local vn=vec_dot(vx,vy,c.nx,c.ny)
+	local nv=vn+max(0,c.dist)*fps_dt
+	if nv<0 then
+		add(collisions, {x=tx,y=ty})
+	end
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
