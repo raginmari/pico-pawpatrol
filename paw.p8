@@ -217,13 +217,6 @@ function collide_player(p,old_x,old_y)
 		 end
 		end
 	end
-	
-	--legacy
-	if p.y>112 then
-		p.y=112
-		p.dy=0
-		p.on_floor=true
-	end
 end
 
 function contact(p,tx,ty)
@@ -247,25 +240,36 @@ function contact(p,tx,ty)
 	if abs(vx)>abs(vy) then
 		nx=sign(vx)
 		ny=0
-		d=vx-nx*tbb_w/2
+		d=abs(vx)-tbb_w/2
 	else
 		nx=0
 		ny=sign(vy)
-		d=vy-ny*tbb_h/2
+		d=abs(vy)-tbb_h/2
 	end
 	
 	return {nx=nx,ny=ny,dist=d}
 end
 
 function resolve(p,c,tx,ty)
-	--player, contact
+	--player, contact, tile x and y
 	
-	local vx=p.dx
-	local vy=p.dy
-	local vn=vec_dot(vx,vy,c.nx,c.ny)
+	--player velocity along normal
+	local vn=vec_dot(p.dx,p.dy,c.nx,c.ny)
+	
+	--penetration/separation
 	local nv=vn+max(0,c.dist)*fps_dt
+	
+	--if is penetrating
 	if nv<0 then
 		add(collisions, {x=tx,y=ty})
+		if c.nx!=0 then
+			p.dx=0
+			p.x-=c.nx*nv
+		elseif p.dy>0 then
+			p.dy=0
+			p.y-=p.y%8
+			p.on_floor=true
+		end
 	end
 end
 __gfx__
