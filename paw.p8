@@ -8,6 +8,7 @@ fps_dt=0.333
 	
 function _init()
 	restart()
+	_draw_world=draw_world
 end
 
 function restart()
@@ -130,7 +131,7 @@ function _draw()
 	cls()
 	
 	camera(max(64,p.x)-64,0)
-	draw_world()
+	_draw_world()
 	draw_treat()
 	
 	camera()
@@ -139,28 +140,17 @@ end
 
 function draw_world()
 	map(0,0)
-	rectfill(
-		8*(tx0),
-		8*(ty0),
-		8*(tx1)+7,
-		8*(ty1)+7,
-		10)
+	spr(p.spr,p.x,p.y,1,1,p.flipx)
+end
+
+function draw_world_debug()
+	map(0,0)
+	rectfill(8*tx0,8*ty0,8*tx1+7,8*ty1+7,10)
 	for e in all(collisions) do
-		rectfill(
-			8*e.x+1,
-			8*e.y+1,
-			8*e.x+6,
-			8*e.y+6,
-			8
-		)
+		rectfill(8*e.x+1,8*e.y+1,8*e.x+6,8*e.y+6,8)
 	end
  spr(p.spr,p.x,p.y,1,1,p.flipx)
-	rect(
-		aabb.x0,
-		aabb.y0,
-		aabb.x1,
-		aabb.y1,
-		2)
+	rect(aabb.x0,aabb.y0,aabb.x1,aabb.y1,2)
 end
 
 function draw_treat()
@@ -232,7 +222,7 @@ function contact(p,tx,ty)
 	local tbb_w=8+p.w --inflate
 	local tbb_h=8+p.h
 	
-	--vec tile -> player
+	--tile -> player vector
 	local vx=pcx-tcx
 	local vy=pcy-tcy
 	
@@ -253,7 +243,10 @@ end
 function resolve(p,c,tx,ty)
 	--player, contact, tile x and y
 	
-	--player velocity along normal
+	--prevent inner-edge collisions
+	if (fget(mget(tx+c.nx,ty+c.ny),0)) return
+	
+	--player normal velocity
 	local vn=vec_dot(p.dx,p.dy,c.nx,c.ny)
 	
 	--penetration/separation
