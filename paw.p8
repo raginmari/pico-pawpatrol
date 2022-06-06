@@ -128,7 +128,7 @@ end
 -->8
 --draw
 function _draw()
-	cls()
+	cls(12)
 	
 	camera(max(64,p.x)-64,0)
 	_draw_world()
